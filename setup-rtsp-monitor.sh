@@ -106,7 +106,6 @@ while true; do
       --quiet \
       $VLC_EXTRA_ARGS
     echo "[!] Stream ended or timeout. Moving on..."
-    sleep 2
   done
 done
 EOF
