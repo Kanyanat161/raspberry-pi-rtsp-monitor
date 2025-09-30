@@ -28,15 +28,6 @@ else
   echo "[✓] $USERNAME is already in 'video' group."
 fi
 
-# 0b. Check boot target and force boot to console if needed
-CURRENT_TARGET=$(systemctl get-default)
-if [[ "$CURRENT_TARGET" != "multi-user.target" ]]; then
-  echo "[*] Setting Raspberry Pi to boot to console..."
-  sudo raspi-config nonint do_boot_behaviour B2
-else
-  echo "[✓] Already set to boot to console."
-fi
-
 # 1. Ensure VLC (cvlc) is installed
 if ! command -v cvlc >/dev/null 2>&1; then
   echo "[*] Installing VLC (cvlc)..."
