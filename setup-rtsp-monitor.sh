@@ -19,6 +19,10 @@ PLAYER_SCRIPT="$HOME_DIR/rtsp-monitor.sh"
 
 echo "=== RTSP HDMI Monitor Setup ==="
 
+# 0. Force boot to console (no desktop)
+echo "[*] Setting Raspberry Pi to boot to console (no desktop)..."
+sudo raspi-config nonint do_boot_behaviour B2
+
 # 1. Ensure VLC (cvlc) is installed
 if ! command -v cvlc >/dev/null 2>&1; then
   echo "[*] Installing VLC (cvlc)..."
@@ -80,13 +84,8 @@ if [ ${#STREAMS[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Determine video output
-if [ -e /dev/fb0 ]; then
-  VOUT="fb"
-else
-  echo "[!] /dev/fb0 not found, using fbc output"
-  VOUT="fbc"
-fi
+# Force framebuffer output for console
+VOUT="fb"
 
 while true; do
   for URL in "${STREAMS[@]}"; do
@@ -96,7 +95,7 @@ while true; do
       --fullscreen \
       --no-audio \
       --intf dummy \
-      --vout="$VOUT" \
+      --vout=fb \
       --quiet
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
