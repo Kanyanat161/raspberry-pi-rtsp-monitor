@@ -12,6 +12,7 @@ fi
 # Detect current user and home directory
 USERNAME=$(whoami)
 HOME_DIR=$(eval echo ~"$USERNAME")
+USER_UID=$(id -u "$USERNAME")
 
 CONFIG_FILE="$HOME_DIR/rtsp-streams.txt"
 SERVICE_FILE="/etc/systemd/system/rtsp-monitor.service"
@@ -19,9 +20,22 @@ PLAYER_SCRIPT="$HOME_DIR/rtsp-monitor.sh"
 
 echo "=== RTSP HDMI Monitor Setup ==="
 
-# 0. Force boot to console (no desktop)
-echo "[*] Setting Raspberry Pi to boot to console (no desktop)..."
-sudo raspi-config nonint do_boot_behaviour B2
+# 0. Ensure user is in 'video' group (needed for /dev/fb0)
+if ! id -nG "$USERNAME" | grep -qw video; then
+  echo "[*] Adding $USERNAME to 'video' group..."
+  sudo usermod -aG video "$USERNAME"
+else
+  echo "[✓] $USERNAME is already in 'video' group."
+fi
+
+# 0b. Check boot target and force boot to console if needed
+CURRENT_TARGET=$(systemctl get-default)
+if [[ "$CURRENT_TARGET" != "multi-user.target" ]]; then
+  echo "[*] Setting Raspberry Pi to boot to console..."
+  sudo raspi-config nonint do_boot_behaviour B2
+else
+  echo "[✓] Already set to boot to console."
+fi
 
 # 1. Ensure VLC (cvlc) is installed
 if ! command -v cvlc >/dev/null 2>&1; then
@@ -84,9 +98,6 @@ if [ ${#STREAMS[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Force framebuffer output for console
-VOUT="fb"
-
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
@@ -121,6 +132,7 @@ Wants=network-online.target
 [Service]
 User=$USERNAME
 Environment=HOME=$HOME_DIR
+Environment=XDG_RUNTIME_DIR=/run/user/$USER_UID
 ExecStart=$PLAYER_SCRIPT
 Restart=always
 RestartSec=5
