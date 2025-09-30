@@ -1,6 +1,6 @@
 #!/bin/bash
 # setup-rtsp-monitor.sh
-# Raspberry Pi RTSP HDMI monitor setup script
+# Raspberry Pi RTSP HDMI monitor setup script (modern VLC version)
 
 set -euo pipefail
 
@@ -14,12 +14,13 @@ PLAYER_SCRIPT="$HOME_DIR/rtsp-monitor.sh"
 
 echo "=== RTSP HDMI Monitor Setup ==="
 
-# 1. Ensure omxplayer is installed
-if ! command -v omxplayer >/dev/null 2>&1; then
-  echo "[*] Installing omxplayer..."
-  sudo apt-get install -y omxplayer
+# 1. Ensure VLC (cvlc) is installed
+if ! command -v cvlc >/dev/null 2>&1; then
+  echo "[*] Installing VLC (cvlc)..."
+  sudo apt-get update -y
+  sudo apt-get install -y vlc
 else
-  echo "[✓] omxplayer already installed."
+  echo "[✓] VLC (cvlc) already installed."
 fi
 
 # 2. Create default stream config if missing
@@ -35,7 +36,7 @@ else
   echo "[✓] Config file already exists: $CONFIG_FILE"
 fi
 
-# 3. Create player script
+# 3. Create player script using VLC
 echo "[*] Creating player script at $PLAYER_SCRIPT"
 cat <<'EOF' > "$PLAYER_SCRIPT"
 #!/bin/bash
@@ -52,11 +53,11 @@ fi
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
-    omxplayer --no-keys --aspect-mode fill "$URL"
+    cvlc --fullscreen --no-video-title-show --quiet "$URL"
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
   done
-done
+ done
 EOF
 
 chmod +x "$PLAYER_SCRIPT"
