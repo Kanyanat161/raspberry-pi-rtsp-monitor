@@ -53,7 +53,7 @@ fi
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
-    cvlc --fullscreen --no-video-title-show --quiet "$URL"
+    cvlc --fullscreen --no-video-title-show "$URL"
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
   done
