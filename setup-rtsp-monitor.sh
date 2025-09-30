@@ -67,9 +67,9 @@ while true; do
     cvlc "$URL" \
       --no-video-title-show \
       --fullscreen \
-      --aout=dummy \
-      --vout=drm \
-      --quiet
+      --no-audio \
+      --no-xlib \
+      --vout=fb 
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
   done
