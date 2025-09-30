@@ -15,7 +15,7 @@ This project provides a fool-proof setup script and systemd service that automat
 1. Clone this repository to your Pi:
 
 ```bash
-git clone https://github.com/tim661811/pi-rtsp-monitor.git
+git clone https://github.com/tim661811/raspberry-pi-rtsp-monitor.git
 cd pi-rtsp-monitor
 ````
 
