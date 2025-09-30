@@ -2,18 +2,21 @@
 # setup-rtsp-monitor.sh
 # Raspberry Pi RTSP HDMI monitor setup script
 
-set -e
+set -euo pipefail
 
-CONFIG_FILE="/home/pi/rtsp-streams.txt"
+# Detect current user and home directory
+USERNAME=$(whoami)
+HOME_DIR=$(eval echo ~"$USERNAME")
+
+CONFIG_FILE="$HOME_DIR/rtsp-streams.txt"
 SERVICE_FILE="/etc/systemd/system/rtsp-monitor.service"
-PLAYER_SCRIPT="/home/pi/rtsp-monitor.sh"
+PLAYER_SCRIPT="$HOME_DIR/rtsp-monitor.sh"
 
 echo "=== RTSP HDMI Monitor Setup ==="
 
 # 1. Update system
 echo "[*] Updating system..."
-sudo apt-get update -y
-sudo apt-get upgrade -y
+sudo apt-get update -y && sudo apt-get upgrade -y
 
 # 2. Ensure omxplayer is installed
 if ! command -v omxplayer >/dev/null 2>&1; then
@@ -31,7 +34,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 # Example (Reolink substream):
 # rtsp://user:password@192.168.1.50:554/h264Preview_01_sub
 EOF
-  chown pi:pi "$CONFIG_FILE"
+  chown "$USERNAME":"$USERNAME" "$CONFIG_FILE"
 else
   echo "[✓] Config file already exists: $CONFIG_FILE"
 fi
@@ -40,10 +43,10 @@ fi
 echo "[*] Creating player script at $PLAYER_SCRIPT"
 cat <<'EOF' > "$PLAYER_SCRIPT"
 #!/bin/bash
-CONFIG_FILE="/home/pi/rtsp-streams.txt"
+CONFIG_FILE="$HOME/rtsp-streams.txt"
 
 # Read streams (ignore comments and empty lines)
-mapfile -t STREAMS < <(grep -v '^\s*#' "$CONFIG_FILE" | grep -v '^\s*$')
+mapfile -t STREAMS < <(grep -v '^[[:space:]]*#' "$CONFIG_FILE" | grep -v '^[[:space:]]*$')
 
 if [ ${#STREAMS[@]} -eq 0 ]; then
   echo "No RTSP streams configured in $CONFIG_FILE"
@@ -61,7 +64,7 @@ done
 EOF
 
 chmod +x "$PLAYER_SCRIPT"
-chown pi:pi "$PLAYER_SCRIPT"
+chown "$USERNAME":"$USERNAME" "$PLAYER_SCRIPT"
 
 # 5. Create systemd service
 if [ ! -f "$SERVICE_FILE" ]; then
@@ -73,7 +76,8 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=pi
+User=$USERNAME
+Environment=HOME=$HOME_DIR
 ExecStart=$PLAYER_SCRIPT
 Restart=always
 RestartSec=5
