@@ -4,6 +4,11 @@
 
 set -euo pipefail
 
+FORCE_REINSTALL=0
+if [[ "${1:-}" == "--force" ]]; then
+  FORCE_REINSTALL=1
+fi
+
 # Detect current user and home directory
 USERNAME=$(whoami)
 HOME_DIR=$(eval echo ~"$USERNAME")
@@ -24,7 +29,12 @@ else
 fi
 
 # 2. Create default stream config if missing
-if [ ! -f "$CONFIG_FILE" ]; then
+if [ ! -f "$CONFIG_FILE" ] || [[ $FORCE_REINSTALL -eq 1 ]]; then
+  if [ -f "$CONFIG_FILE" ]; then
+    echo "[*] Backing up existing config to $CONFIG_FILE.bak"
+    cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
+  fi
+
   echo "[*] Creating default stream list at $CONFIG_FILE"
   cat <<EOF > "$CONFIG_FILE"
 # Add one RTSP URL per line
@@ -37,8 +47,9 @@ else
 fi
 
 # 3. Create player script using VLC
-echo "[*] Creating player script at $PLAYER_SCRIPT"
-cat <<'EOF' > "$PLAYER_SCRIPT"
+if [[ ! -f "$PLAYER_SCRIPT" ]] || [[ $FORCE_REINSTALL -eq 1 ]]; then
+  echo "[*] Creating (or overwriting) player script at $PLAYER_SCRIPT"
+  cat <<'EOF' > "$PLAYER_SCRIPT"
 #!/bin/bash
 CONFIG_FILE="$HOME/rtsp-streams.txt"
 
@@ -53,19 +64,27 @@ fi
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
-    cvlc --fullscreen --no-video-title-show "$URL"
+    cvlc "$URL" \
+      --no-video-title-show \
+      --fullscreen \
+      --aout=dummy \
+      --vout=drm \
+      --quiet
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
   done
- done
+done
 EOF
 
-chmod +x "$PLAYER_SCRIPT"
-chown "$USERNAME":"$USERNAME" "$PLAYER_SCRIPT"
+  chmod +x "$PLAYER_SCRIPT"
+  chown "$USERNAME":"$USERNAME" "$PLAYER_SCRIPT"
+else
+  echo "[✓] Player script already exists: $PLAYER_SCRIPT"
+fi
 
 # 4. Create systemd service
-if [ ! -f "$SERVICE_FILE" ]; then
-  echo "[*] Creating systemd service at $SERVICE_FILE"
+if [ ! -f "$SERVICE_FILE" ] || [[ $FORCE_REINSTALL -eq 1 ]]; then
+  echo "[*] Creating (or overwriting) systemd service at $SERVICE_FILE"
   sudo bash -c "cat <<EOF > $SERVICE_FILE
 [Unit]
 Description=RTSP HDMI Monitor
@@ -80,8 +99,8 @@ Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-After=graphical.target
-Wants=graphical.target
+TTYPath=/dev/tty1
+StandardInput=tty
 
 [Install]
 WantedBy=multi-user.target
@@ -91,7 +110,7 @@ else
 fi
 
 # 5. Enable and start service
-echo "[*] Enabling and starting service..."
+echo "[*] Reloading systemd and starting service..."
 sudo systemctl daemon-reload
 sudo systemctl enable rtsp-monitor.service
 sudo systemctl restart rtsp-monitor.service
