@@ -1,14 +1,18 @@
 # raspberry-pi-rtsp-monitor
-Turn any Raspberry Pi into a dedicated **RTSP camera monitor**.  
+
+Turn any Raspberry Pi into a dedicated **RTSP camera monitor**.
 This project provides a fool-proof setup script and systemd service that automatically plays one or more RTSP camera feeds fullscreen over HDMI.
+
+Tested and working on **Raspberry Pi Zero W** with **Raspberry Pi OS Lite 32-bit (Debian Bookworm)**.
+This solution uses **VLC (cvlc)** — not the obsolete OMXPlayer.
 
 ## ✨ Features
 
-- 🎥 Auto-plays RTSP camera streams over HDMI
-- 🔄 Cycles through multiple cameras endlessly
-- ⚡ Lightweight playback (uses GPU acceleration where possible)
-- 🔁 Auto-restarts after disconnects or errors
-- 🚀 Boots straight into camera feed (kiosk-style)
+* 🎥 Auto-plays RTSP camera streams over HDMI
+* 🔄 Cycles through multiple cameras endlessly
+* ⚡ Uses VLC to stream the RTSP streams
+* 🔁 Auto-restarts after disconnects or errors
+* 🚀 Boots straight into camera feed (kiosk-style, console mode)
 
 ## 📦 Installation
 
@@ -16,8 +20,8 @@ This project provides a fool-proof setup script and systemd service that automat
 
 ```bash
 git clone https://github.com/tim661811/raspberry-pi-rtsp-monitor.git
-cd pi-rtsp-monitor
-````
+cd raspberry-pi-rtsp-monitor
+```
 
 2. Run the setup script:
 
@@ -28,24 +32,30 @@ chmod +x setup-rtsp-monitor.sh
 
 This will:
 
-* Install **omxplayer** (or verify it’s already installed)
-* Create a config file for your streams (`/home/pi/rtsp-streams.txt`)
+* Install **VLC (cvlc)** if missing
+* Create a config file for your streams (`~/rtsp-streams.txt`)
 * Create and enable a systemd service (`rtsp-monitor.service`)
-* Start playback automatically
+* Start playback automatically at boot
+
+💡 Run with `--force` to overwrite existing configs and service (can be used for updating the application):
+
+```bash
+./setup-rtsp-monitor.sh --force
+```
 
 ## ⚙️ Configuration
 
 Edit the stream list:
 
 ```bash
-nano /home/pi/rtsp-streams.txt
+nano ~/rtsp-streams.txt
 ```
 
 Example:
 
 ```text
 # Add one RTSP URL per line
-# Example (Reolink substream)
+# Example (Reolink substream):
 rtsp://user:password@192.168.1.50:554/h264Preview_01_sub
 rtsp://user:password@192.168.1.51:554/h264Preview_01_sub
 ```
