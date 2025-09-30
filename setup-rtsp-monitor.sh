@@ -105,8 +105,6 @@ while true; do
       --no-video-title-show \
       --fullscreen \
       --no-audio \
-      --intf dummy \
-      --vout=fb \
       --quiet
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
