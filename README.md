@@ -66,6 +66,12 @@ Save and reboot:
 sudo reboot
 ```
 
+or reload the application without rebooting:
+
+```bash
+sudo systemctl restart rtsp-monitor.service
+```
+
 ## ⚠️ RTSP URL Encoding
 
 When adding RTSP URLs to `~/rtsp-streams.txt`, **special characters must be URL-encoded**.
