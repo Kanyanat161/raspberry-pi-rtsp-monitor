@@ -89,6 +89,13 @@ if [ ${#STREAMS[@]} -eq 0 ]; then
   exit 1
 fi
 
+# If multiple streams, enable run-time
+if [ ${#STREAMS[@]} -gt 1 ]; then
+  VLC_EXTRA_ARGS="--run-time=30 --play-and-exit"
+else
+  VLC_EXTRA_ARGS=""
+fi
+
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
@@ -96,8 +103,9 @@ while true; do
       --no-video-title-show \
       --fullscreen \
       --no-audio \
-      --quiet
-    echo "[!] Stream ended or error. Restarting..."
+      --quiet \
+      $VLC_EXTRA_ARGS
+    echo "[!] Stream ended or timeout. Moving on..."
     sleep 2
   done
 done
