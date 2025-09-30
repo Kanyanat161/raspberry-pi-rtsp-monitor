@@ -80,6 +80,8 @@ Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
+After=graphical.target
+Wants=graphical.target
 
 [Install]
 WantedBy=multi-user.target
