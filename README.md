@@ -28,7 +28,6 @@ chmod +x setup-rtsp-monitor.sh
 
 This will:
 
-* Update your system
 * Install **omxplayer** (or verify it’s already installed)
 * Create a config file for your streams (`/home/pi/rtsp-streams.txt`)
 * Create and enable a systemd service (`rtsp-monitor.service`)

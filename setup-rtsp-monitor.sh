@@ -14,11 +14,7 @@ PLAYER_SCRIPT="$HOME_DIR/rtsp-monitor.sh"
 
 echo "=== RTSP HDMI Monitor Setup ==="
 
-# 1. Update system
-echo "[*] Updating system..."
-sudo apt-get update -y && sudo apt-get upgrade -y
-
-# 2. Ensure omxplayer is installed
+# 1. Ensure omxplayer is installed
 if ! command -v omxplayer >/dev/null 2>&1; then
   echo "[*] Installing omxplayer..."
   sudo apt-get install -y omxplayer
@@ -26,7 +22,7 @@ else
   echo "[✓] omxplayer already installed."
 fi
 
-# 3. Create default stream config if missing
+# 2. Create default stream config if missing
 if [ ! -f "$CONFIG_FILE" ]; then
   echo "[*] Creating default stream list at $CONFIG_FILE"
   cat <<EOF > "$CONFIG_FILE"
@@ -39,7 +35,7 @@ else
   echo "[✓] Config file already exists: $CONFIG_FILE"
 fi
 
-# 4. Create player script
+# 3. Create player script
 echo "[*] Creating player script at $PLAYER_SCRIPT"
 cat <<'EOF' > "$PLAYER_SCRIPT"
 #!/bin/bash
@@ -66,7 +62,7 @@ EOF
 chmod +x "$PLAYER_SCRIPT"
 chown "$USERNAME":"$USERNAME" "$PLAYER_SCRIPT"
 
-# 5. Create systemd service
+# 4. Create systemd service
 if [ ! -f "$SERVICE_FILE" ]; then
   echo "[*] Creating systemd service at $SERVICE_FILE"
   sudo bash -c "cat <<EOF > $SERVICE_FILE
@@ -91,7 +87,7 @@ else
   echo "[✓] Service already exists: $SERVICE_FILE"
 fi
 
-# 6. Enable and start service
+# 5. Enable and start service
 echo "[*] Enabling and starting service..."
 sudo systemctl daemon-reload
 sudo systemctl enable rtsp-monitor.service
