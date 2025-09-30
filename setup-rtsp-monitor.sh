@@ -80,6 +80,14 @@ if [ ${#STREAMS[@]} -eq 0 ]; then
   exit 1
 fi
 
+# Determine video output
+if [ -e /dev/fb0 ]; then
+  VOUT="fb"
+else
+  echo "[!] /dev/fb0 not found, using fbc output"
+  VOUT="fbc"
+fi
+
 while true; do
   for URL in "${STREAMS[@]}"; do
     echo "[*] Playing: $URL"
@@ -87,8 +95,9 @@ while true; do
       --no-video-title-show \
       --fullscreen \
       --no-audio \
-      --no-xlib \
-      --vout=fb 
+      --intf dummy \
+      --vout="$VOUT" \
+      --quiet
     echo "[!] Stream ended or error. Restarting..."
     sleep 2
   done
