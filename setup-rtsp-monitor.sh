@@ -1,6 +1,6 @@
 #!/bin/bash
 # setup-rtsp-monitor.sh
-# Raspberry Pi RTSP HDMI monitor setup script (modern VLC version)
+# Raspberry Pi RTSP HDMI monitor setup script (VLC 3.x)
 
 set -euo pipefail
 
@@ -28,13 +28,8 @@ else
   echo "[✓] VLC (cvlc) already installed."
 fi
 
-# 2. Create default stream config if missing
-if [ ! -f "$CONFIG_FILE" ] || [[ $FORCE_REINSTALL -eq 1 ]]; then
-  if [ -f "$CONFIG_FILE" ]; then
-    echo "[*] Backing up existing config to $CONFIG_FILE.bak"
-    cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
-  fi
-
+# 2. Create default stream config if missing or force update comments
+if [ ! -f "$CONFIG_FILE" ]; then
   echo "[*] Creating default stream list at $CONFIG_FILE"
   cat <<EOF > "$CONFIG_FILE"
 # Add one RTSP URL per line
@@ -42,8 +37,31 @@ if [ ! -f "$CONFIG_FILE" ] || [[ $FORCE_REINSTALL -eq 1 ]]; then
 # rtsp://user:password@192.168.1.50:554/h264Preview_01_sub
 EOF
   chown "$USERNAME":"$USERNAME" "$CONFIG_FILE"
-else
-  echo "[✓] Config file already exists: $CONFIG_FILE"
+elif [[ $FORCE_REINSTALL -eq 1 ]]; then
+  echo "[*] Updating explanatory comments in $CONFIG_FILE"
+
+  # Backup existing file
+  cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
+
+  # Find first non-comment line
+  FIRST_NON_COMMENT_LINE=$(grep -n -v '^[[:space:]]*#' "$CONFIG_FILE" | head -n1 | cut -d: -f1 || echo 0)
+  if [[ "$FIRST_NON_COMMENT_LINE" -eq 0 ]]; then
+    FIRST_NON_COMMENT_LINE=$(( $(wc -l < "$CONFIG_FILE") + 1 ))
+  fi
+
+  # Preserve user streams (all lines from first non-comment line)
+  tail -n +"$FIRST_NON_COMMENT_LINE" "$CONFIG_FILE" > "$CONFIG_FILE.tmp.streams"
+
+  # Write updated comments
+  cat <<EOF > "$CONFIG_FILE"
+# Add one RTSP URL per line
+# Example (Reolink substream):
+# rtsp://user:password@192.168.1.50:554/h264Preview_01_sub
+EOF
+
+  # Append user streams back
+  cat "$CONFIG_FILE.tmp.streams" >> "$CONFIG_FILE"
+  rm "$CONFIG_FILE.tmp.streams"
 fi
 
 # 3. Create player script using VLC
@@ -58,6 +76,7 @@ mapfile -t STREAMS < <(grep -v '^[[:space:]]*#' "$CONFIG_FILE" | grep -v '^[[:sp
 
 if [ ${#STREAMS[@]} -eq 0 ]; then
   echo "No RTSP streams configured in $CONFIG_FILE"
+  echo "Please edit $CONFIG_FILE and add at least one RTSP URL."
   exit 1
 fi
 
@@ -99,8 +118,6 @@ Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-TTYPath=/dev/tty1
-StandardInput=tty
 
 [Install]
 WantedBy=multi-user.target
