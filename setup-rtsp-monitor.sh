@@ -103,6 +103,7 @@ while true; do
       --no-video-title-show \
       --fullscreen \
       --no-audio \
+      --aout dummy \
       --quiet \
       $VLC_EXTRA_ARGS
     echo "[!] Stream ended or timeout. Moving on..."
