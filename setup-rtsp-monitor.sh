@@ -133,8 +133,11 @@ Environment=XDG_RUNTIME_DIR=/run/user/$USER_UID
 ExecStart=$PLAYER_SCRIPT
 Restart=always
 RestartSec=5
-StandardOutput=journal
-StandardError=journal
+StandardOutput=journal+console
+StandardError=journal+console
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
 
 [Install]
 WantedBy=multi-user.target
