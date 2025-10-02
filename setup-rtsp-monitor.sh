@@ -96,9 +96,29 @@ else
   VLC_EXTRA_ARGS=""
 fi
 
+# Helper: redact passwords in rtsp URLs for logging
+# - keeps username (if present) and replaces password with REDACTED
+# - examples:
+#   rtsp://user:pass@host/path -> rtsp://user:REDACTED@host/path
+#   rtsp://user@host/path      -> rtsp://user@host/path
+#   no-creds URLs are unchanged
+redact_url() {
+  local url="$1"
+  # Match rtsp://username:password@rest
+  if [[ "$url" =~ ^(rtsp://)([^:/@]+):([^@]+)@(.+)$ ]]; then
+    echo "${BASH_REMATCH[1]}${BASH_REMATCH[2]}:REDACTED@${BASH_REMATCH[4]}"
+  # Match rtsp://username@rest (no password)
+  elif [[ "$url" =~ ^(rtsp://)([^@]+)@(.+)$ ]]; then
+    echo "${BASH_REMATCH[1]}${BASH_REMATCH[2]}@${BASH_REMATCH[3]}"
+  else
+    echo "$url"
+  fi
+}
+
 while true; do
   for URL in "${STREAMS[@]}"; do
-    echo "[*] Playing: $URL"
+    REDACTED_URL=$(redact_url "$URL")
+    echo "[*] Playing: $REDACTED_URL"
     cvlc "$URL" \
       --no-video-title-show \
       --fullscreen \
